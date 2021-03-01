@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<head>
+<style>
+form {
+	padding: 10px;
+	background-color: #EEE;
+}
+
+form label {
+	display: block;
+}
+
+form > div {
+	margin: 20px 0;
+}
+
+table {
+	margin: 20px 0;
+	text-align: left;
+}
+
+table th {
+	padding: 12px;
+	background-color: #4CAF50;
+	color: white;
+}
+</style>
+</head>
+<body>
+	<h1>Grass Collector!</h1>
+	<p>
+		Thank you for joining us on this grassy adventure! Please upload any <tt>ModLog.txt</tt> logs you made while clearing grass. Don't forget any ones that have been moved into your <tt>Old ModLogs</tt> folder (your current log gets moved into that folder each time you load Hollow Knight).
+	</p>
+	<form action="/upload" method="post" enctype="multipart/form-data">
+		<div>
+			<div>Who are you?</div>
+			<label>
+				<input type="radio" name="player" value="Shade"> Shade
+			</label>
+			<label>
+				<input type="radio" name="player" value="Nanao"> Nanao
+			</label>
+			<label>
+				<input type="radio" name="player" value="Bismuth"> Bismuth
+			</label>
+			<label>
+				<input type="radio" name="player" value="John"> John
+			</label>
+			<label>
+				<input type="radio" name="player" value="Wren"> Wren
+			</label>
+		</div>
+		<div>
+			<div>Select some Mod Logs to upload</div>
+			<label>
+				<input type="file" name="logs" multiple="multiple">
+			</label>
+		</div>
+		<input type="submit">
+	</form>
+	<table>
+		<thead>
+			<th>Player Name</th>
+			<th>Total Grass Discovered</th>
+			<th>Total Shameful Grass Found</th>
+			<th>Total Grass Cut</th>
+		</thead>
+		{{#players}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{grassSeen}}</td>
+			<td>{{grassShouldBeCut}}</td>
+			<td>{{grassCut}}</td>
+		</tr>
+		{{/players}}
+	</table>
+	<table>
+		<thead>
+			<th>Scene Name</th>
+			<th>Grass in Room</th>
+			<th>Shameful Grass in Room</th>
+			<th>Cuttable Grass in Room</th>
+		</thead>
+		{{#scenes}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{grassSeen}}</td>
+			<td>{{grassShouldBeCut}}</td>
+			<td>{{grassCut}}</td>
+		</tr>
+		{{/scenes}}
+	</table>
+	<table>
+		<thead>
+			<th>Grass Address</th>
+			<th>Final Grass State</th>
+		</thead>
+		{{#grass}}
+		<tr>
+			<td>{{address}}</td>
+			<td>{{state}}</td>
+		</tr>
+		{{/grass}}
+	</table>
+</body>
