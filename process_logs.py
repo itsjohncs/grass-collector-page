@@ -6,7 +6,7 @@ import re
 
 _GrassAddress = collections.namedtuple("GrassAddress", [
     "scene_name",
-    "grassName",
+    "grass_name",
     "grass_x",
     "grass_y",
     "grass_z",
@@ -16,8 +16,24 @@ _GrassAddress = collections.namedtuple("GrassAddress", [
 class GrassAddress(_GrassAddress):
     def __str__(self):
         return (
-            f"{self.scene_name}/{self.grassName} "
+            f"{self.scene_name}/{self.grass_name} "
             f"({self.grass_x}, {self.grass_y}, {self.grass_z})")
+
+    def _to_canonical_tuple(self):
+        # We want to ignore the z coordinate because it changes between room
+        # loads
+        return (
+            self.scene_name,
+            self.grass_name,
+            self.grass_x,
+            self.grass_y
+        )
+
+    def __hash__(self):
+        return hash(self._to_canonical_tuple())
+
+    def __eq__(self, other):
+        return self._to_canonical_tuple() == other._to_canonical_tuple()
 
 
 class GrassState(enum.Enum):
@@ -40,16 +56,16 @@ class GrassState(enum.Enum):
 class Event:
     EVENT_RE = re.compile(
         r"^.*!grassHuntEvent (?P<kind>[^ ]+) +"
-        r"(?P<scene_name>.+?)\/(?P<grassName>.+) \("
+        r"(?P<scene_name>.+?)\/(?P<grass_name>.+) \("
         r"(?P<grass_x>-?[0-9]+(?:\.[0-9]*)?), "
         r"(?P<grass_y>-?[0-9]+(?:\.[0-9]*)?), "
         r"(?P<grass_z>-?[0-9]+(?:\.[0-9]*)?)\)\s*$")
 
-    def __init__(self, kind, scene_name, grassName, grass_x, grass_y, grass_z):
+    def __init__(self, kind, scene_name, grass_name, grass_x, grass_y, grass_z):
         self.kind = kind
         self.address = GrassAddress(
             scene_name=scene_name,
-            grassName=grassName,
+            grass_name=grass_name,
             grass_x=grass_x,
             grass_y=grass_y,
             grass_z=grass_z)
