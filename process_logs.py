@@ -3,6 +3,8 @@ import enum
 import os
 import re
 
+import all_grassy_scenes
+
 
 _GrassAddress = collections.namedtuple("GrassAddress", [
     "scene_name",
@@ -148,9 +150,27 @@ def process_logs(root):
                 for log_line in f:
                     event = Event.from_log_line(log_line)
                     if event:
-                        print("event kind", event.kind, event.address)
                         global_accumulator.take_event(event)
                         player_accumulator.take_event(event)
+
+    scenes = global_accumulator.sums_by("name", lambda k: k.scene_name)
+    for scene in scenes:
+        scene["cleared"] = (scene["grassSeen"] <=
+                            scene["grassCut"] + scene["grassShouldBeCut"])
+
+    known_scenes = {scene["name"] for scene in scenes}
+    for scene_name in all_grassy_scenes.ALL_GRASS_SCENES:
+        if scene_name not in known_scenes:
+            scenes.append({
+                "name": scene_name,
+                "grassSeen": 0,
+                "grassShouldBeCut": 0,
+                "grassCut": 0,
+                "missingDiscoveries": 0,
+                "cleared": False,
+            })
+
+    scenes.sort(key=lambda scene: (int(scene["cleared"]), scene["name"]))
 
     return {
         "players": [
@@ -161,7 +181,7 @@ def process_logs(root):
             for player_name, accumulator in player_accumulators.items()
             if accumulator.has_data()
         ],
-        "scenes": global_accumulator.sums_by("name", lambda k: k.scene_name),
+        "scenes": scenes,
         "grass": [
             {
                 "address": str(k),
