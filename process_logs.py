@@ -21,6 +21,15 @@ class GrassAddress(_GrassAddress):
             f"{self.scene_name}/{self.grass_name} "
             f"({self.grass_x}, {self.grass_y}, {self.grass_z})")
 
+    def to_dict(self):
+        return {
+            "scene_name": self.scene_name,
+            "grass_name": self.grass_name,
+            "grass_x": self.grass_x,
+            "grass_y": self.grass_y,
+            "grass_z": self.grass_z,
+        }
+
     def _to_canonical_tuple(self):
         # We want to ignore the z coordinate because it changes between room
         # loads
@@ -188,5 +197,12 @@ def process_logs(root):
                 "state": state.name,
             }
             for k, state in global_accumulator.grass_state_by_address.items()
-        ]
+        ],
+        "grassRaw": [
+            {
+                **k.to_dict(),
+                "state": state.name,
+            }
+            for k, state in global_accumulator.grass_state_by_address.items()
+        ],
     }

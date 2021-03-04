@@ -1,5 +1,6 @@
 import os
 import uuid
+import json
 
 from flask import Flask, request
 from werkzeug.utils import secure_filename
@@ -42,3 +43,8 @@ def upload():
             secure_filename(f.filename + "-" + uuid.uuid4().hex)))
 
     return "Success! <a href='/'>Return to homepage</a>"
+
+@app.route("/json", methods=["GET"])
+def getjson():
+    log_data = process_logs.process_logs(FILE_DB)
+    return json.dumps(log_data["grassRaw"])
