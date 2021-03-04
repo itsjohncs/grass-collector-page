@@ -68,9 +68,9 @@ class Event:
     EVENT_RE = re.compile(
         r"^.*!grassHuntEvent (?P<kind>[^ ]+) +"
         r"(?P<scene_name>.+?)\/(?P<grass_name>.+) \("
-        r"(?P<grass_x>-?[0-9]+(?:\.[0-9]*)?), "
-        r"(?P<grass_y>-?[0-9]+(?:\.[0-9]*)?), "
-        r"(?P<grass_z>-?[0-9]+(?:\.[0-9]*)?)\)\s*$")
+        r"(?P<grass_x>[^,]+), "
+        r"(?P<grass_y>[^,]+), "
+        r"(?P<grass_z>[^)]+)\)\s*$")
 
     def __init__(self, kind, scene_name, grass_name, grass_x, grass_y, grass_z):
         self.kind = kind
